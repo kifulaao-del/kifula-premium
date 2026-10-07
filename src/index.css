@@ -31,6 +31,17 @@ button, input, select {
 
 button {
   cursor: pointer;
+  border: none;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+a:hover {
+  opacity: 0.8;
 }
 
 .container {
@@ -169,6 +180,7 @@ button.primary, button.secondary {
   padding: 12px 20px;
   font-weight: 800;
   transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 button.primary {
@@ -567,6 +579,12 @@ button.small {
   align-items: center;
   gap: 8px;
   color: var(--ink);
+  transition: 0.2s ease;
+}
+
+.credit-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 .school-grid {
@@ -577,6 +595,13 @@ button.small {
   padding: 18px 20px;
   text-align: left;
   background: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.school-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 .school-card.selected {
@@ -625,6 +650,61 @@ button.small {
   font-weight: 700;
 }
 
+.footer {
+  background: #0f172a;
+  color: white;
+  margin-top: 60px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  padding: 40px 0;
+}
+
+.footer h4, .footer h5 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+}
+
+.footer p {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.footer p.small {
+  font-size: 0.8rem;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer ul li {
+  margin-bottom: 8px;
+}
+
+.footer a {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.footer a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
 @media (max-width: 900px) {
   .hero, .panel-grid, .feature-grid, .plans-grid, .search-results, .school-grid, .stats-grid {
     grid-template-columns: 1fr;
@@ -640,6 +720,10 @@ button.small {
   }
 
   .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
     grid-template-columns: 1fr;
   }
 }

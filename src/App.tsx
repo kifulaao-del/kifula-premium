@@ -55,6 +55,7 @@ function App() {
   const [escolaSearch, setEscolaSearch] = useState('');
   const [selectedSchoolId, setSelectedSchoolId] = useState('escola_001');
   const [creditos, setCreditos] = useState(24);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const filteredSchools = useMemo(() => {
     return buscarEscolas({ nome: escolaSearch || undefined });
@@ -83,42 +84,59 @@ function App() {
     const W = 210;
     const M = 20;
 
+    // Página 1 - Capa
     doc.setFillColor(16, 36, 62);
-    doc.rect(0, 0, W, 30, 'F');
+    doc.rect(0, 0, W, 35, 'F');
 
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.text('KIFULA PREMIUM', W / 2, 15, { align: 'center' });
+    doc.setFontSize(14);
+    doc.text('KIFULA PREMIUM', W / 2, 12, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text('Plataforma de Trabalhos Escolares', W / 2, 22, { align: 'center' });
 
     doc.setTextColor(25, 35, 48);
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
-    doc.text('REPÚBLICA DE ANGOLA', W / 2, 42, { align: 'center' });
-    doc.text('MINISTÉRIO DA EDUCAÇÃO', W / 2, 50, { align: 'center' });
-    doc.text((form.instituicao || 'INSTITUIÇÃO').toUpperCase(), W / 2, 60, { align: 'center' });
+    doc.text('REPÚBLICA DE ANGOLA', W / 2, 50, { align: 'center' });
+    doc.text('MINISTÉRIO DA EDUCAÇÃO', W / 2, 58, { align: 'center' });
+    doc.text((form.instituicao || 'INSTITUIÇÃO').toUpperCase(), W / 2, 68, { align: 'center' });
+    doc.setFontSize(11);
+    doc.text(form.tipo, W / 2, 75, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.text(`Disciplina: ${form.disciplina}`, W / 2, 86, { align: 'center' });
-    doc.setFontSize(20);
+    doc.text(`Disciplina: ${form.disciplina}`, W / 2, 95, { align: 'center' });
+
+    doc.setFontSize(18);
     const tema = form.tema || 'Tema do trabalho';
     const temaLines = doc.splitTextToSize(tema, W - M * 2);
-    doc.text(temaLines, W / 2, 110, { align: 'center' });
+    doc.text(temaLines, W / 2, 115, { align: 'center' });
 
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text(`Autor: ${form.autor}`, W - M, 162, { align: 'right' });
-    doc.text(`Classe: ${form.classe}  Turma: ${form.turma || '—'}`, W - M, 170, { align: 'right' });
-    doc.text(`Professor(a): ${form.professor}`, W - M, 178, { align: 'right' });
-    doc.text(`${form.local} / ${form.ano}`, W / 2, 268, { align: 'center' });
+    doc.text(`Autor: ${form.autor}`, W - M, 165, { align: 'right' });
+    doc.text(`Classe: ${form.classe}  Turma: ${form.turma || '—'}  N.º ${form.numero || '—'}`, W - M, 173, { align: 'right' });
+    doc.text(`Professor(a): ${form.professor}`, W - M, 181, { align: 'right' });
 
     if (form.includeQrCode) {
       doc.setDrawColor(0, 0, 0);
-      doc.rect(M, 230, 28, 28);
-      doc.setFontSize(6);
-      doc.text('VALIDAÇÃO DIGITAL', M + 1, 262);
+      doc.rect(M, 225, 30, 30);
+      doc.setFontSize(7);
+      doc.text('VALIDAÇÃO DIGITAL', M + 1, 260);
+      doc.text('The Vision Corp', M + 1, 265);
     }
 
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text(`${form.local} / ${form.ano}`, W / 2, 275, { align: 'center' });
+
+    // Página 2 - Índice
     doc.addPage();
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.text('ÍNDICE', W / 2, 25, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
     [
       ['1. Introdução', '3'],
@@ -126,29 +144,64 @@ function App() {
       ['3. Conclusão', '5'],
       ['4. Bibliografia', '6']
     ].forEach(([t, p], idx) => {
-      doc.text(t, M, 45 + idx * 12);
-      doc.text(p, W - M, 45 + idx * 12, { align: 'right' });
+      doc.text(t as string, M, 45 + idx * 12);
+      doc.text(p as string, W - M, 45 + idx * 12, { align: 'right' });
     });
 
+    // Página 3 - Introdução
     doc.addPage();
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(15);
     doc.text('1. INTRODUÇÃO', M, 25);
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    const introText = 'O presente trabalho escolar aborda o tema de forma aprofundada, enquadrando os conceitos académicos e a sua importância para o desenvolvimento social e económico em Angola.';
+    const introText = 'O presente trabalho escolar aborda o tema de forma aprofundada, enquadrando os conceitos acadêmicos e a sua importância para o desenvolvimento social e económico de Angola. Cumpre rigorosamente as normas curriculares vigentes no sistema educacional angolano.';
     doc.text(doc.splitTextToSize(introText, W - M * 2), M, 38);
 
+    // Página 4 - Desenvolvimento
     doc.addPage();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(15);
     doc.text('2. DESENVOLVIMENTO', M, 25);
-    const devText = `No âmbito da disciplina de ${form.disciplina}, analisa-se o tema proposto, considerando os princípios curriculares vigentes, a relevância técnica e os impactos na formação académica do estudante.`;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    const devText = `No âmbito da disciplina de ${form.disciplina}, analisa-se o tema proposto, considerando os princípios curriculares vigentes, a relevância técnica e os impactos na formação académica do estudante. Procurou-se apresentar uma abordagem equilibrada entre a teoria e a prática, contextualizando os conceitos no cenário angolano.`;
     doc.text(doc.splitTextToSize(devText, W - M * 2), M, 38);
 
+    // Página 5 - Conclusão
     doc.addPage();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(15);
     doc.text('3. CONCLUSÃO', M, 25);
-    doc.text(doc.splitTextToSize('Conclui-se que o domínio da matéria é essencial para a formação do aluno, contribuindo para a sua preparação académica e profissional no contexto angolano.', W - M * 2), M, 38);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    const conclusaoText = 'Conclui-se que o domínio da matéria é essencial para a formação do aluno, contribuindo para a sua preparação académica e profissional no contexto angolano. O estudo aprofundado dos temas propostos permite ao estudante adquirir competências fundamentais para o seu desenvolvimento futuro.';
+    doc.text(doc.splitTextToSize(conclusaoText, W - M * 2), M, 38);
 
+    // Página 6 - Bibliografia
     doc.addPage();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(15);
     doc.text('4. BIBLIOGRAFIA', M, 25);
-    doc.text(doc.splitTextToSize('MINISTÉRIO DA EDUCAÇÃO DE ANGOLA. Programas curriculares do ensino secundário e médio. Luanda, 2026. \nAUTOR. Trabalho científico e apoio académico. The Vision Corp.', W - M * 2), M, 38);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    const bibText = `MINISTÉRIO DA EDUCAÇÃO DE ANGOLA. Programas Curriculares do Ensino Secundário e Médio. Luanda, 2026.
+VALENTIM, Deive. Manuais de Apoio Técnico e Metodológico do Kifula. The Vision Corp, Contacto: 975912613.
+Diversas fontes académicas consultadas conforme tema ${form.disciplina}.`;
+    doc.text(doc.splitTextToSize(bibText, W - M * 2), M, 38);
+
+    // Página final - Validação
+    doc.addPage();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('VALIDAÇÃO DIGITAL', W / 2, 30, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text(`Trabalho gerado em: ${new Date().toLocaleDateString('pt-PT')}`, W / 2, 50, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text('The Vision Corp', W / 2, 70, { align: 'center' });
+    doc.text('Tel: 975912613', W / 2, 78, { align: 'center' });
+    doc.text('Plataforma: Kifula Premium v2.7', W / 2, 86, { align: 'center' });
 
     doc.save(`Kifula-${(form.tema || 'trabalho').slice(0, 24).replace(/\s+/g, '_')}.pdf`);
     setCreditos((value) => Math.max(0, value - 5));
@@ -225,7 +278,7 @@ function App() {
             <section className="feature-grid">
               {[
                 ['📄', 'Capa oficial', 'Estrutura completa com ministério, instituição, disciplina, tema e QR Code.'],
-                ['🔎', 'Pesquisa inteligente', 'Filtra por escola, disciplina, classe, província e tipo de ensino.'],
+                ['🔍', 'Pesquisa inteligente', 'Filtra por escola, disciplina, classe, província e tipo de ensino.'],
                 ['💳', 'Pagamento Premium', 'Créditos, planos e métodos locais de pagamento em Angola.'],
                 ['🧠', 'Biblioteca premium', 'Busca temas e usa conteúdos em qualquer instituição angolana.'],
               ].map(([icon, title, text]) => (
@@ -446,6 +499,43 @@ function App() {
           </section>
         )}
       </main>
+
+      <footer className="footer">
+        <div className="container footer-grid">
+          <div>
+            <h4>Kifula Premium</h4>
+            <p>Plataforma angolana de trabalhos escolares com biblioteca inteligente e sistema de pagamento.</p>
+            <p className="small">🇦🇴 Desenvolvido para Angola</p>
+          </div>
+          <div>
+            <h5>Produto</h5>
+            <ul>
+              <li><a href="#">Gerador de Trabalhos</a></li>
+              <li><a href="#">Biblioteca de Temas</a></li>
+              <li><a href="#">Escolas Angolanas</a></li>
+              <li><a href="#">Planos Premium</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Empresa</h5>
+            <ul>
+              <li><a href="#">Sobre Nós</a></li>
+              <li><a href="#">Contacto</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Termos de Serviço</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Contacto</h5>
+            <p>The Vision Corp</p>
+            <p>Tel: 975912613</p>
+            <p>Email: info@thevisioncorp.ao</p>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>© 2026 Kifula Premium. Todos os direitos reservados. | Desenvolvido por The Vision Corp</p>
+        </div>
+      </footer>
     </div>
   );
 }
